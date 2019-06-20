@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sist.mapper.board-mapper">
+  <!-- 목록 
+       CREATE OR REPLACE PROCEDURE boardAllData(
+         pStart NUMBER,
+         pEnd NUMBER,
+         pResult OUT SYS_REFCURSOR
+       )
+   -->
+   <!-- 
+               BoardVO vo=new BoardVO();
+			   vo.setNo(rs.getInt(1));
+			   vo.setSubject(rs.getString(2));
+			   vo.setName(rs.getString(3));
+			   vo.setRegdate(rs.getDate(4));
+			   vo.setHit(rs.getInt(5));
+			   
+    -->
+   <resultMap type="BoardVO" id="boardMap">
+     <result property="no" column="no"/>
+     <result property="name" column="name"/>
+     <result property="subject" column="subject"/>
+     <result property="content" column="content"/>
+     <result property="regdate" column="regdate"/>
+     <result property="hit" column="hit"/>
+   </resultMap>
+   <!-- 
+           cs.setInt(1, start);
+		   cs.setInt(2, end);
+		   cs.registerOutParameter(3,OracleTypes.CURSOR);
+    -->
+   <parameterMap type="hashmap" id="boardList">
+     <parameter property="pStart" mode="IN" javaType="java.lang.Integer"/>
+     <parameter property="pEnd" mode="IN" javaType="java.lang.Integer"/>
+     <parameter property="pResult" mode="OUT" jdbcType="CURSOR" resultMap="boardMap"/>
+   </parameterMap>
+   <select id="boardAllData" statementType="CALLABLE" parameterMap="boardList">
+     {CALL boardAllData(?,?,?)}
+   </select>
+   
+   <!-- 총페이지  Function-->
+   <select id="boardTotalPage" resultType="int">
+     SELECT boardTotal() FROM DUAL
+   </select>
+   <!-- 게시물 갯수 Function-->
+   <select id="boardRowCount" resultType="int">
+     SELECT boardRowCount() FROM DUAL
+   </select>
+   
+   <!-- 
+       CREATE OR REPLACE PROCEDURE boardInsert(
+        pName IN board.name%TYPE,
+        pEmail IN board.email%TYPE,
+        pSubject IN board.subject%TYPE,
+        pContent IN board.content%TYPE,
+        pPwd IN board.pwd%TYPE
+     )
+    -->
+    <parameterMap type="hashmap" id="boardIn">
+      <parameter property="pName" mode="IN" javaType="java.lang.String"/>
+      <parameter property="pEmail" mode="IN" javaType="java.lang.String"/>
+      <parameter property="pSubject" mode="IN" javaType="java.lang.String"/>
+      <parameter property="pContent" mode="IN" javaType="java.lang.String"/>
+      <parameter property="pPwd" mode="IN" javaType="java.lang.String"/>
+    </parameterMap>
+    <select id="boardInsert" statementType="CALLABLE" parameterMap="boardIn">
+      {CALL boardInsert(?,?,?,?,?)}
+    </select>
+    
+    <!-- 
+             상세보기
+       CREATE OR REPLACE PROCEDURE boardDetailData(
+        pNo IN board.no%TYPE,
+        pResult OUT SYS_REFCURSOR
+       )
+     -->
+     <parameterMap type="hashmap" id="detailMap">
+       <parameter property="pNo" mode="IN" javaType="java.lang.Integer"/>
+       <parameter property="pResult" mode="OUT" jdbcType="CURSOR" resultMap="boardMap"/>
+     </parameterMap>
+     <select id="boardDetailData" statementType="CALLABLE" parameterMap="detailMap">
+       {CALL boardDetailData(?,?)}
+     </select>
+     
+     <!-- 
+          CREATE OR REPLACE PROCEDURE boardUpdateData(
+            pNo IN board.no%TYPE,
+            pResult OUT SYS_REFCURSOR
+          )
+      -->
+      <parameterMap type="hashmap" id="updateMap">
+       <parameter property="pNo" mode="IN" javaType="java.lang.Integer"/>
+       <parameter property="pResult" mode="OUT" jdbcType="CURSOR" resultMap="boardMap"/>
+     </parameterMap>
+     <select id="boardUpdateData" statementType="CALLABLE" parameterMap="updateMap">
+       {CALL boardUpdateData(?,?)}
+     </select>
+     <!-- 
+                면접 : SI , 솔루션 
+                          게시판 : 제작?,시간?  
+      -->
+     <!-- 
+        CREATE OR REPLACE PROCEDURE boardUpdate(
+         pName IN board.name%TYPE,
+         pEmail IN board.email%TYPE,
+         pSubject IN board.subject%TYPE,
+         pContent IN board.content%TYPE,
+         pPwd IN board.pwd%TYPE,
+         pNo IN board.no%TYPE
+       )
+      -->
+      <parameterMap type="hashmap" id="update_okMap">
+        <parameter property="pName" mode="IN" javaType="java.lang.String"/>
+        <parameter property="pEmail" mode="IN" javaType="java.lang.String"/>
+        <parameter property="pSubject" mode="IN" javaType="java.lang.String"/>
+        <parameter property="pContent" mode="IN" javaType="java.lang.String"/>
+        <parameter property="pPwd" mode="IN" javaType="java.lang.String"/>
+        <parameter property="pNo" mode="IN" javaType="java.lang.Integer"/>
+      </parameterMap>
+      <select id="boardUpdateOk" statementType="CALLABLE" parameterMap="update_okMap">
+        {CALL boardUpdate(?,?,?,?,?,?)}
+      </select>
+      <!-- 
+         CREATE OR REPLACE PROCEDURE boardGetPwd(
+          pNo IN board.no%TYPE,
+          pPwd OUT board.pwd%TYPE
+      )
+      -->
+      <parameterMap type="hashmap" id="boardGetPwdMap">
+        <parameter property="pNo" mode="IN" javaType="java.lang.Integer"/>
+        <parameter property="pPwd" mode="OUT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+      </parameterMap>
+      <select id="boardGetPwd" statementType="CALLABLE" parameterMap="boardGetPwdMap">
+        {CALL boardGetPwd(?,?)}
+      </select>
+      
+      <!-- 
+          CREATE OR REPLACE PROCEDURE boardDelete(
+           pNo IN board.no%TYPE
+          )
+       -->
+       <parameterMap type="hashmap" id="deleteMap">
+         <parameter property="pNo" mode="IN" javaType="java.lang.Integer"/>
+       </parameterMap>
+       <select id="boardDelete" statementType="CALLABLE" parameterMap="deleteMap">
+         {CALL boardDelete(?)}
+       </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

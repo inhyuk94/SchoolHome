@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	<!-- 사용자 정의 클래스 -->
+	<context:component-scan base-package="com.sist.*"/>
+	<!-- tiles -->
+	<!-- ViewResolver -->
+	 <!-- 
+        tiles.xml파일 로딩  => tile.xml (템플릿 제작)
+     -->
+    <bean id="tilesConfigurer" 
+       class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
+       p:definitions="/WEB-INF/config/tiles.xml"
+    />
+    <bean id="tilesViewResolver"
+      class="org.springframework.web.servlet.view.UrlBasedViewResolver"
+      p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"
+      p:order="0"
+    />
+    <bean id="viewResolver"
+      class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+      p:prefix="/"
+      p:suffix=".jsp"
+      p:order="1"
+    />
+    
+    <bean class="com.chat.web.WebSocketHandler" id="chatHandler"/>
+    <websocket:handlers>
+
+	<websocket:mapping path="/main/chat-ws" handler="chatHandler"/>
+		<websocket:handshake-interceptors>
+			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
+		</websocket:handshake-interceptors>
+	</websocket:handlers>
+    
+</beans>
